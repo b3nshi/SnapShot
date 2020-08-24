@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import PhotoContextProvider from "./context/PhotoContext";
+import SearchContextProvider from "./context/SearchContext";
 import {
   BrowserRouter as Router,
   Route,
@@ -12,7 +13,6 @@ import Search from "./components/Search";
 import NotFound from "./components/NotFound";
 
 class App extends Component {
-  // Prevent page reload, clear input, set URL and push history on submit
   handleSubmit = (e, history, searchInput) => {
     e.preventDefault();
     e.currentTarget.reset();
@@ -23,40 +23,45 @@ class App extends Component {
   render() {
     return (
       <PhotoContextProvider>
-        <Router basename="/">
-          <div className="container">
-            <Route
-              render={(props) => (
-                <Header
-                  handleSubmit={this.handleSubmit}
-                  history={props.history}
-                />
-              )}
-            />
-            <Switch>
+        <SearchContextProvider>
+          <Router basename="/">
+            <div className="container">
               <Route
-                exact
-                path="/"
-                render={() => <Redirect to="/mountain" />}
-              />
-
-              <Route
-                path="/mountain"
-                render={() => <Item searchTerm="mountain" />}
-              />
-              <Route path="/beach" render={() => <Item searchTerm="beach" />} />
-              <Route path="/bird" render={() => <Item searchTerm="bird" />} />
-              <Route path="/food" render={() => <Item searchTerm="food" />} />
-              <Route
-                path="/search/:searchInput"
                 render={(props) => (
-                  <Search searchTerm={props.match.params.searchInput} />
+                  <Header
+                    handleSubmit={this.handleSubmit}
+                    history={props.history}
+                  />
                 )}
               />
-              <Route component={NotFound} />
-            </Switch>
-          </div>
-        </Router>
+              <Switch>
+                <Route
+                  exact
+                  path="/"
+                  render={() => <Redirect to="/mountain" />}
+                />
+
+                <Route
+                  path="/mountain"
+                  render={() => <Item searchTerm="mountain" />}
+                />
+                <Route
+                  path="/beach"
+                  render={() => <Item searchTerm="beach" />}
+                />
+                <Route path="/bird" render={() => <Item searchTerm="bird" />} />
+                <Route path="/food" render={() => <Item searchTerm="food" />} />
+                <Route
+                  path="/search/:searchInput"
+                  render={(props) => (
+                    <Search searchTerm={props.match.params.searchInput} />
+                  )}
+                />
+                <Route component={NotFound} />
+              </Switch>
+            </div>
+          </Router>
+        </SearchContextProvider>
       </PhotoContextProvider>
     );
   }

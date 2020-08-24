@@ -1,6 +1,11 @@
 import React, { Component } from "react";
 import PhotoContextProvider from "./context/PhotoContext";
-import { HashRouter, Route, Switch, Redirect } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Route,
+  Switch,
+  Redirect,
+} from "react-router-dom";
 import Header from "./components/Header";
 import Item from "./components/Item";
 import Search from "./components/Search";
@@ -18,10 +23,10 @@ class App extends Component {
   render() {
     return (
       <PhotoContextProvider>
-        <HashRouter basename="/SnapScout">
+        <Router basename="/">
           <div className="container">
             <Route
-              render={props => (
+              render={(props) => (
                 <Header
                   handleSubmit={this.handleSubmit}
                   history={props.history}
@@ -44,14 +49,14 @@ class App extends Component {
               <Route path="/food" render={() => <Item searchTerm="food" />} />
               <Route
                 path="/search/:searchInput"
-                render={props => (
+                render={(props) => (
                   <Search searchTerm={props.match.params.searchInput} />
                 )}
               />
               <Route component={NotFound} />
             </Switch>
           </div>
-        </HashRouter>
+        </Router>
       </PhotoContextProvider>
     );
   }

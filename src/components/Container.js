@@ -1,43 +1,52 @@
-import React, { useContext, useEffect, useState, useCallback } from "react";
-import { PhotoContext } from "../context/PhotoContext";
-import Gallery from "./Gallery";
-import Loader from "./Loader";
+import React, { useContext, useEffect, useState, useCallback } from "react"
+import { PhotoContext } from "../context/PhotoContext"
+import Gallery from "./Gallery"
+import Loader from "./Loader"
 
 const Container = ({ searchTerm }) => {
-  const { images, loading, runSearch } = useContext(PhotoContext);
+  const { images, loading, runSearch } = useContext(PhotoContext)
   const [position, setPosition] = useState({
     loaded: false,
-  });
+  })
 
   const updateGeoPosition = useCallback(
     (geoPosition) => {
+      console.log(geoPosition)
       setPosition({
         loaded: true,
-        lat: geoPosition.coords.latitude,
-        lng: geoPosition.coords.longitude,
-      });
+        lat: geoPosition.lat || geoPosition.coords.latitude,
+        lng: geoPosition.lng || geoPosition.coords.longitude,
+      })
     },
     [setPosition]
-  );
+  )
 
   useEffect(() => {
     if (!position.loaded && navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(updateGeoPosition);
+      navigator.geolocation.getCurrentPosition(updateGeoPosition)
     }
-  }, [position, updateGeoPosition]);
+  }, [position, updateGeoPosition])
 
   useEffect(() => {
     if (position.loaded) {
-      runSearch(searchTerm, position);
+      runSearch(searchTerm, position)
     }
     // eslint-disable-next-line
-  }, [searchTerm, position]);
+  }, [searchTerm, position])
 
   return (
     <div className="photo-container">
-      {loading ? <Loader /> : <Gallery position={position} data={images} />}
+      {!position.loaded || loading ? (
+        <Loader />
+      ) : (
+        <Gallery
+          changePosition={updateGeoPosition}
+          position={position}
+          data={images}
+        />
+      )}
     </div>
-  );
-};
+  )
+}
 
-export default Container;
+export default Container

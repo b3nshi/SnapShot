@@ -1,16 +1,17 @@
-import React, { createContext, useState } from "react";
-import axios from "axios";
-import { apiKey } from "../api/config";
-export const PhotoContext = createContext();
+import React, { createContext, useState } from "react"
+import axios from "axios"
+import { apiKey } from "../api/config"
+export const PhotoContext = createContext()
 
 const PhotoContextProvider = (props) => {
-  const [cache, setCache] = useState({});
-  const [images, setImages] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [cache, setCache] = useState({})
+  const [images, setImages] = useState([])
+  const [loading, setLoading] = useState(true)
   const runSearch = (query, geoPosition) => {
-    if (cache[query]) {
-      setImages(cache[query]);
-      setLoading(false);
+    const keyCache = `${query}_${geoPosition.lat}_${geoPosition.lng}`
+    if (cache[keyCache]) {
+      setImages(cache[keyCache])
+      setLoading(false)
     } else {
       axios
         .get(
@@ -19,24 +20,21 @@ const PhotoContextProvider = (props) => {
         .then((response) => {
           setCache({
             ...cache,
-            [query]: response.data.photos.photo,
-          });
-          setImages(response.data.photos.photo);
-          setLoading(false);
+            [keyCache]: response.data.photos.photo,
+          })
+          setImages(response.data.photos.photo)
+          setLoading(false)
         })
         .catch((error) => {
-          console.log(
-            "Encountered an error with fetching and parsing data",
-            error
-          );
-        });
+          console.log("Encountered an error with fetching and parsing data", error)
+        })
     }
-  };
+  }
   return (
     <PhotoContext.Provider value={{ images, loading, runSearch }}>
       {props.children}
     </PhotoContext.Provider>
-  );
-};
+  )
+}
 
-export default PhotoContextProvider;
+export default PhotoContextProvider

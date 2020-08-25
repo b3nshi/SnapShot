@@ -1,0 +1,10 @@
+.image img,
+.imageHover img {
+  width: 30px;
+  height: 30px;
+  border-radius: 15px;
+}
+
+.imageHover img {
+  border: 1px solid #333;
+}

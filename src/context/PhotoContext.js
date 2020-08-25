@@ -7,14 +7,14 @@ const PhotoContextProvider = (props) => {
   const [cache, setCache] = useState({});
   const [images, setImages] = useState([]);
   const [loading, setLoading] = useState(true);
-  const runSearch = (query) => {
+  const runSearch = (query, geoPosition) => {
     if (cache[query]) {
       setImages(cache[query]);
       setLoading(false);
     } else {
       axios
         .get(
-          `https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=${apiKey}&tags=${query}&per_page=24&format=json&nojsoncallback=1`
+          `https://api.flickr.com/services/rest/?method=flickr.photos.search&lat=${geoPosition.lat}&lon=${geoPosition.lng}&api_key=${apiKey}&tags=${query}&per_page=24&format=json&nojsoncallback=1&extras=geo`
         )
         .then((response) => {
           setCache({
